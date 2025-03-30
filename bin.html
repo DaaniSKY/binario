@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversor de Binário</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url(https://font.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900);
+
+    *{
+      font-family: "Inter", sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-white">
+  <div class="flex justify-center items-center h-screen">
+    <form action="" class="max-w-md w-full bg-purple-900 shadow-2xl rounded-xl">
+      <fieldset>
+        <legend class="text-center bg-gradient-to-b from-green-500 text-4xl p-14 rounded-t-xl">Conversor de Binário</legend>
+        <div class="m-8 mb-0 p-3 bg-white rounded-xl">
+          <label for="binario" class="text-sm text-green-400 mb-1">Binário</label>
+          <input type="text" name="" id="binario" placeholder="ex:101101" class="w-full outline-none bg-transparent ">
+        </div>
+        <div class="m-8 mb-0 p-3 bg-white rounded-xl">
+            <label for="conv" class="text-green-400">Tipo de conversão</label>
+            <select name="convertor" id="conv">
+              <option value="select">Selecione o tipo de conversão</option>
+              <option value="decimal">Decimal</option>
+              <option value="octal">Octal</option>
+              <option value="hexadecimal">Hexadecimal</option>
+              <option value="ascii">ASCII</option>
+              <option value="completodedois">Complemento de Dois</option>
+              <option value="bcd">BCD</option>
+              <option value="graycode">Gray Code</option>
+              <option value="ieee754">IEEE 754</option>
+              <option value="base36">Base 36</option>
+              <option value="xs-3">XS-3</option>
+              <option value="unicode">Unicode</option>
+            </select>
+          </form>
+        </div>
+        <div class="m-8 mb-0">
+          <button class="p-3 w-full bg-green-500 uppercase text-white font-medium hover:bg-green-700 rounded-xl">Converter</button>
+        </div>
+        <div class="m-8">
+          <div class="p-3 bg-green-400 text-white border-2 border-dotted border-white rounded-xl" id="response">
+            
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <script>
+
+    const formEL = document.querySelector("form")
+    const binarioEL = document.getElementById("binario")
+    const conversorEL = document.getElementById("conv")
+    const responseEL = document.getElementById("response")
+
+    formEL.addEventListener("submit", (e) =>{
+      e.preventDefault()
+      
+      const binario1 = binarioEL.value
+      const conversor1 = conversorEL.value
+
+      if((binario1=="")||(conversor1=="select")){
+        alert("Por favor, informe o binário e o tipo de conversão!")
+        return
+      } else if(! /^[01]+$/.test(binario1)){
+        alert("Insira um número binário, ele deve ter apenas 0 e 1")
+        return
+      } else if(conversor1 == "decimal"){
+          const dec = parseInt(binario1, 2)
+          responseEL.innerHTML = "<p>"+dec+"<p>"
+      } else if(conversor1 == "octal"){
+          const octa = parseInt(binario1, 2).toString(8)
+          responseEL.innerHTML = "<p>"+octa+"<p>"
+      } else if(conversor1 == "hexadecimal"){
+          const hex = parseInt(binario1, 2).toString(16).toUpperCase()
+          responseEL.innerHTML = "<p>"+hex+"<p>"
+      } else if(conversor1 == "ascii"){
+          const asc = String.fromCharCode(parseInt(binario1, 2))
+          responseEL.innerHTML = "<p>"+asc+"<p>"
+      } else if(conversor1 == "completodedois"){
+          const invertido = binario1.split('').map(bit => bit == '0' ? '1' : '0').join('')
+          const soma = parseInt(invertido, 2).toString(2)
+          const cdd = soma.padStart(binario1.length, '0')
+          responseEL.innerHTML = "<p>"+cdd+"<p>"
+      } else if(conversor1 == "bcd"){
+          const dec2 = parseInt(binario1, 2)
+          const bbcd = dec2.toString().split('').map(digit => ('0000'+ parseInt(digit).toString(2)).slice(-4)).join('')
+          responseEL.innerHTML = "<p>"+bbcd+"<p>"
+      } else if(conversor1 == "graycode"){
+          let gray = binario1[0]
+          for (let i = 1; i < binario1.length; i++){
+            gray += (binario1[i-1] === binario1[i]) ? '0' : '1'
+          }
+          responseEL.innerHTML = "<p>"+gray+"<p>"
+      } else if(conversor1 == "ieee754"){
+        let decimal = parseInt(binario, 2);
+        let buffer = new ArrayBuffer(4);
+        new DataView(buffer).setFloat32(0, decimal);
+        let binaryIEEE754 = '';
+        new Uint8Array(buffer).forEach(byte => {
+          binaryIEEE754 += byte.toString(2).padStart(8, '0');
+        })
+          responseEL.innerHTML = "<p>"+binaryIEEE754+"<p>"
+      } else if(conversor1 == "base36"){
+          const ba36 = parseInt(binario1, 2).toString(36).toUpperCase()
+          responseEL.innerHTML = "<p>"+ba36+"<p>"
+      } else if(conversor1 == "xs-3"){
+          const dec3 = parseInt(binario1, 2) + 3
+          const xs3 = dec3.toString(2)
+          responseEL.innerHTML = "<p>"+xs3+"<p>"
+      } else if(conversor1 == "unicode"){
+          const dec4 = parseInt(binario1, 2)
+          const uni = String.fromCharCode(dec4)
+          responseEL.innerHTML = "<p>"+uni+"<p>"
+      }
+    })
+  </script>
+</body>
+</html>
